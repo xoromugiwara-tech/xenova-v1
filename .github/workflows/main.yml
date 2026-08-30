@@ -1,4 +1,4 @@
-name: Build Xenova APK
+name: Build Xenova Android APK
 
 on:
   workflow_dispatch:
@@ -11,31 +11,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build Xenova
-        run: npm run build
-
-      - name: Sync Capacitor
-        run: npx cap sync android
+          node-version: 24
+          cache: npm
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 21
+          java-version: '21'
 
-      - name: Make Gradle executable
-        run: chmod +x android/gradlew
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web app
+        run: npm run build
+
+      - name: Sync Capacitor
+        run: npx cap sync android
 
       - name: Build APK
         working-directory: android
